@@ -1,0 +1,11 @@
+.imageHolder img {
+    width: 200px;
+
+}
+
+.imageHolder {
+    display: inline-block;
+    border: 1px solid red;
+    margin-right: 20px;
+    
+}
