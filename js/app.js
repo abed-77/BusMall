@@ -34,6 +34,8 @@ var chartCanvas = document.getElementById('myChart').getContext('2d');
 
 var shownImages = [];
 
+var clearStorage = document.getElementById('clear');
+
 //-------------
 //Constructor//
 //-------------
@@ -137,6 +139,7 @@ function counts(event) {
   } else {
     imgSection.removeEventListener('click', counts);
     // console.log(ImgArray);
+    storeData();
     renderChart(); // <<==  ===============================================   <<== chartRender
   }
 }
@@ -255,7 +258,13 @@ function readData() {
   }
 }
 
+function clearData(){
+  localStorage.clear();
+  productsArray= [];
+}
 
+
+clearStorage.addEventListener('click', clearData);
 
 
 //-----------------------------
@@ -268,6 +277,7 @@ for (let index = 0; index < imgArray.length; index++) {
 }
 
 pickImg();
+readData();
 
 imgSection.addEventListener('click', counts);
 
