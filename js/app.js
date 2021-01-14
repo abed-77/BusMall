@@ -245,6 +245,19 @@ function renderChart() {
 }
 
 
+function storeData() {
+  localStorage.setItem('dataItem', JSON.stringify(productsArray));
+}
+
+function readData() {
+  if (localStorage.length > 0) {
+    productsArray = JSON.parse(localStorage.getItem('dataItem')) ;
+  }
+}
+
+
+
+
 //-----------------------------
 // Constructor & Function Calls
 //-----------------------------
