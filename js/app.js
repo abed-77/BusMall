@@ -1,3 +1,4 @@
+
 'use strict';
 
 //-------------------
@@ -21,9 +22,17 @@ var rightImgText = document.getElementById('right_h2');
 
 var imgSection = document.getElementById('imageSection');
 
-var trialsleft = 25;
+var trialsleft = 10;
 
 var btn = document.getElementById('viewButton');
+
+var resultList = document.getElementById('resultList');
+
+var chartCanvas = document.getElementById('myChart').getContext('2d');
+// ctx.fillStyle = 'green';
+// ctx.fillRect = (10, 10, 150, 100);
+
+var shownImages = [];
 
 //-------------
 //Constructor//
@@ -63,20 +72,50 @@ function renderImg(leftImage, midImage, rightImage) {
 //---------------------------------
 
 function pickImg() {
-  var leftImageRnd = Math.round(Math.random() * (productsArray.length - 1));
+  do {
+    var leftImageRnd = Math.round(Math.random() * (productsArray.length - 1));
+    var leftImageName = productsArray[leftImageRnd].name;
+  } while (checkAvl(leftImageName));
 
   do {
     var rightImageRnd = Math.round(Math.random() * (productsArray.length - 1));
+    var rightImageName = productsArray[rightImageRnd].name;
+  } while ((leftImageRnd === rightImageRnd) || checkAvl(rightImageName));
+
+
+  do {
     var midImageRnd = Math.round(Math.random() * (productsArray.length - 1));
-  }
-  while (leftImageRnd === rightImageRnd || leftImageRnd === midImageRnd || midImageRnd === rightImageRnd);
+    var midImageName = productsArray[midImageRnd].name;
+  } while (leftImageRnd === midImageRnd || midImageRnd === rightImageRnd ||
+    checkAvl(midImageName));
+
 
   // console.log(leftImageRnd);
   // console.log(midImageRnd);
   // console.log(rightImageRnd);
 
+  shownImages = [];
+  shownImages.push(
+    productsArray[leftImageRnd],
+    productsArray[midImageRnd],
+    productsArray[rightImageRnd]
+  );
+
   renderImg(leftImageRnd, midImageRnd, rightImageRnd);
 }
+
+
+function checkAvl(selectedImageName) {
+  for (let index = 0; index < shownImages.length; index++) {
+    if (shownImages[index].name === selectedImageName) {
+      return true;
+    }
+    return false;
+  }
+}
+
+
+
 
 //------------------------
 // Counting event times
@@ -98,6 +137,7 @@ function counts(event) {
   } else {
     imgSection.removeEventListener('click', counts);
     // console.log(ImgArray);
+    renderChart(); // <<==  ===============================================   <<== chartRender
   }
 }
 
@@ -111,50 +151,8 @@ function checkTrials(objectIndicator) {
   }
 }
 
-//-----------------------------
-// Constructor & Function Calls
-//-----------------------------
 
-// new Img('bag.jpg');
-// new Img('banana.jpg');
-// new Img('bathroom.jpg');
-// new Img('boots.jpg');
-// new Img('breakfast.jpg');
-// new Img('bubblegum.jpg');
-// new Img('chair.jpg');
-// new Img('cthulhu.jpg');
-// new Img('dog-duck');
-// new Img('dragon.jpg');
-// new Img('pen.jpg');
-// new Img('pet-sweep.jpg');
-// new Img('scissors.jpg');
-// new Img('shark.jpg');
-// new Img('sweep', 'sweep.png');
-// new Img('tauntaun', 'tauntaun.jpg');
-// new Img('unicorn', 'unicorn.jpg');
-// new Img('usb', 'usb.gif');
-// new Img('water-can', 'water-can.jpg');
-// new Img('wine-glass', 'wine-glass.jpg');
-
-// consol.log(productsArray)
-
-
-for (let index = 0; index < imgArray.length; index++) {
-  new Img(imgArray[index]);
-
-}
-
-pickImg();
-
-imgSection.addEventListener('click', counts);
-
-
-btn.addEventListener('click', viewResult);
-
-
-var resultList = document.getElementById('resultList');
-
-function viewResult(event) {
+function viewResult() { // should we define a parameter (event)??
   resultList.innerHTML = '';
   for (let index = 0; index < productsArray.length; index++) {
     var li = document.createElement('li');
@@ -167,5 +165,97 @@ function viewResult(event) {
 
 }
 
+//---------------------------------------------
+// Chart Rendering
+//---------------------------------------------
+function renderChart() {
+  var labelArray = [];
+  var countArry = [];
+  var viewsArray = [];
 
-// can't hear you!
+  for (var index = 0; index < productsArray.length; index++) {
+    labelArray.push(productsArray[index].name);
+    countArry.push(productsArray[index].counter);
+    viewsArray.push(productsArray[index].views);
+
+  }
+
+  var myChart = new Chart(chartCanvas, {
+
+    type: 'bar',
+    data: {
+      labels: labelArray,// <============
+      datasets: [{
+        label: '# of Counts',
+        data: countArry,// <============
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)'
+        ],
+        borderWidth: 1
+      },
+
+      {
+        label: '# of Views',
+        data: viewsArray,// <============
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)'
+        ],
+        borderWidth: 1
+      }
+
+      ]
+    },
+    options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  });
+
+}
+
+
+//-----------------------------
+// Constructor & Function Calls
+//-----------------------------
+
+for (let index = 0; index < imgArray.length; index++) {
+  new Img(imgArray[index]);
+
+}
+
+pickImg();
+
+imgSection.addEventListener('click', counts);
+
+btn.addEventListener('click', viewResult);

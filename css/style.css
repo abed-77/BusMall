@@ -1,5 +1,6 @@
 .imageHolder img {
-    width: 200px;
+    width: 285px;
+    height: auto
 
 }
 
@@ -7,5 +8,16 @@
     display: inline-block;
     border: 1px solid red;
     margin-right: 20px;
-    
+    margin-left: 20px;
+    }
+
+button {
+    size: 1%;
 }
+
+canvas {
+    border: solid black 1px;
+    /* width: 85%; */
+    margin: 4px;
+}
+
